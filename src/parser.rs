@@ -1,29 +1,15 @@
-use std::{collections::VecDeque, fmt::format};
+use std::collections::VecDeque;
 
 use crate::vocab::Vocabulary;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum TokenType {
-    Verb,
-    Noun,
-    Adjective,
+pub enum Token {
+    Verb(String),
+    Noun(String),
+    Adjective(String),
     Eof,
-    Nil,
 }
 
-#[derive(Debug, Clone)]
-pub struct Token {
-    token_type: TokenType,
-    literal: String,
-}
-impl Token {
-    pub fn new(token_type: TokenType, literal: String) -> Self {
-        Token {
-            token_type: token_type,
-            literal: literal,
-        }
-    }
-}
 #[derive(Debug)]
 pub struct Tokenizer {
     tokens: VecDeque<Token>,
@@ -46,58 +32,54 @@ impl Tokenizer {
     }
 }
 
-pub fn parse(source: String, vocab: &Vocabulary) -> Result<(), String> {
-    let mut tokens = get_tokens(source, vocab)?;
+pub fn parse(source: String, vocab: &Vocabulary) {
+    let mut tokens = get_tokens(source, vocab);
     // dbg!(tokens);
     sentence(&mut tokens);
-    if tokens.get_token().token_type == TokenType::Eof {
-        println!("Parsed Successfully!");
+    match tokens.get_token() {
+        Token::Eof => println!("Parsed Successfully!"),
+        _ => (),
     }
-    Ok(())
 }
 
 fn sentence(tokens: &mut Tokenizer) {
     let token = tokens.get_token();
-    if token.token_type == TokenType::Verb {
-        tokens.next_token();
-        object(tokens);
+    match token {
+        Token::Verb(_) => {
+            tokens.next_token();
+            object(tokens);
+        }
+        _ => return,
     }
 }
 fn object(tokens: &mut Tokenizer) {
     let mut token = tokens.get_token();
-    if token.token_type == TokenType::Noun {
-        tokens.next_token();
-    } else if token.token_type == TokenType::Adjective {
-        tokens.next_token();
-        token = tokens.get_token();
-        if token.token_type == TokenType::Noun {
-            tokens.next_token();
-        } else {
-            println!("Error parsing");
-        }
-    } else {
-        println!("Grammer Not Correct");
-        return;
-    }
+    match token {
+        Token::Adjective(_) => tokens.next_token(),
+        _ => (),
+    };
+    token = tokens.get_token();
+    match token {
+        Token::Noun(_) => tokens.next_token(),
+        _ => {
+            println!("Object Grammer incorrect");
+            return;
+        },
+    };
 }
 
-fn get_tokens(source: String, vocab: &Vocabulary) -> Result<Tokenizer, String> {
+fn get_tokens(source: String, vocab: &Vocabulary) -> Tokenizer {
     let mut tokens = Tokenizer::new();
     let mut source = source.as_str().split_whitespace();
     while let Some(word) = source.next() {
         match vocab.check_word(word) {
-            TokenType::Nil => {
-                return Err(format!("I don't understand word [{}]", word));
-            }
-            token_type => {
-                let token = Token::new(token_type, word.to_string());
-                tokens.add_token(token);
-            }
+            None => continue,
+            Some(token) => tokens.add_token(token),
         };
     }
-    let token = Token::new(TokenType::Eof, "".to_string());
-    tokens.add_token(token);
-    Ok(tokens)
+    tokens.add_token(Token::Eof);
+    println!("{:?}", tokens);
+    tokens
 }
 
 #[cfg(test)]
