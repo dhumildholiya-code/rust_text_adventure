@@ -37,18 +37,54 @@ impl Tokenizer {
     pub fn add_token(&mut self, token: Token) {
         self.tokens.push_back(token);
     }
-    pub fn get_token(&mut self) -> Token {
-        self.tokens
-            .pop_front()
-            .expect("There are no tokens in Tokenizer")
+    pub fn get_token(&self) -> Token {
+        let first = self.tokens.front();
+        first.expect("There are no tokens!").to_owned()
+    }
+    pub fn next_token(&mut self) {
+        self.tokens.pop_front().expect("There are no tokens");
     }
 }
 
-pub fn get_tokens(source: String, vocab: &Vocabulary) -> Result<Tokenizer, String> {
+pub fn parse(source: String, vocab: &Vocabulary) -> Result<(), String> {
+    let mut tokens = get_tokens(source, vocab)?;
+    // dbg!(tokens);
+    sentence(&mut tokens);
+    if tokens.get_token().token_type == TokenType::Eof {
+        println!("Parsed Successfully!");
+    }
+    Ok(())
+}
+
+fn sentence(tokens: &mut Tokenizer) {
+    let token = tokens.get_token();
+    if token.token_type == TokenType::Verb {
+        tokens.next_token();
+        object(tokens);
+    }
+}
+fn object(tokens: &mut Tokenizer) {
+    let mut token = tokens.get_token();
+    if token.token_type == TokenType::Noun {
+        tokens.next_token();
+    } else if token.token_type == TokenType::Adjective {
+        tokens.next_token();
+        token = tokens.get_token();
+        if token.token_type == TokenType::Noun {
+            tokens.next_token();
+        } else {
+            println!("Error parsing");
+        }
+    } else {
+        println!("Grammer Not Correct");
+        return;
+    }
+}
+
+fn get_tokens(source: String, vocab: &Vocabulary) -> Result<Tokenizer, String> {
     let mut tokens = Tokenizer::new();
     let mut source = source.as_str().split_whitespace();
     while let Some(word) = source.next() {
-        println!("{}", word);
         match vocab.check_word(word) {
             TokenType::Nil => {
                 return Err(format!("I don't understand word [{}]", word));
