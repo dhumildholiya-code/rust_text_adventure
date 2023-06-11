@@ -4,7 +4,10 @@ use recursive_parser::{parse_input, Vocabulary};
 
 fn main() {
     let vocabulary: Vocabulary = Vocabulary::new();
-    let input = String::from("go moon rusty sword");
+    let input = String::from("pick rusty sword");
 
-    let parseRes = parse_input(input, &vocabulary);
+    match parse_input(input, &vocabulary) {
+        Ok(_) => (println!("parsed successfully.")),
+        Err(err) => println!("{}", err),
+    }
 }

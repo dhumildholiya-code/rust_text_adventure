@@ -9,6 +9,33 @@ pub enum Token {
     Adjective(String),
     Eof,
 }
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Node {
+    Value(String),
+    Action {
+        action: Box<Node>,
+        object: Box<Node>,
+    },
+    Object {
+        adjective: Box<Node>,
+        noun: Box<Node>,
+    },
+}
+impl From<Node> for Result<Box<Node>, String> {
+    fn from(value: Node) -> Self {
+        Ok(Box::new(value))
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ParseTree {
+    root: Box<Node>,
+}
+impl ParseTree {
+    pub fn new(start_node: Box<Node>) -> Self {
+        ParseTree { root: start_node }
+    }
+}
 
 #[derive(Debug)]
 pub struct Tokenizer {

@@ -5,39 +5,53 @@ mod vocab;
 pub use vocab::Vocabulary;
 
 //use for inner modules.
-use parser::{Token, Tokenizer};
+use parser::{Node, ParseTree, Token, Tokenizer};
 
-pub fn parse_input(source: String, vocab: &Vocabulary) {
+pub fn parse_input(source: String, vocab: &Vocabulary) -> Result<ParseTree, String> {
     let mut tokens = Tokenizer::create_tokens(source, vocab);
-    sentence_expr(&mut tokens);
-    match tokens.get_token() {
-        Token::Eof => println!("Parsed Successfully!"),
-        _ => (),
-    }
+    let parse_tree = ParseTree::new(sentence_expr(&mut tokens)?);
+    println!("{:?}", parse_tree);
+    Ok(parse_tree)
 }
 
-fn sentence_expr(tokens: &mut Tokenizer) {
+fn sentence_expr(tokens: &mut Tokenizer) -> Result<Box<Node>, String> {
     let token = tokens.get_token();
     match token {
-        Token::Verb(_) => {
+        Token::Verb(verb) => {
             tokens.next_token();
-            object_expr(tokens);
+            return Node::Action {
+                action: Node::Value(verb).into(),
+                object: object_expr(tokens)?,
+            }
+            .into();
         }
-        _ => return,
+        _ => {
+            return Err(format!(
+                "First word is expected to be [Verb/Action].\n <Sentence> -> <Verb> <Object>"
+            ))
+        }
     }
 }
-fn object_expr(tokens: &mut Tokenizer) {
-    let mut token = tokens.get_token();
+fn object_expr(tokens: &mut Tokenizer) -> Result<Box<Node>, String> {
+    let token = tokens.get_token();
     match token {
-        Token::Adjective(_) => tokens.next_token(),
-        _ => (),
-    };
-    token = tokens.get_token();
-    match token {
-        Token::Noun(_) => tokens.next_token(),
+        Token::Adjective(adj) => {
+            tokens.next_token();
+            return Node::Object {
+                adjective: Box::new(Node::Value(adj)),
+                noun: object_expr(tokens)?,
+            }
+            .into();
+        }
+        Token::Noun(noun) => {
+            tokens.next_token();
+            return Node::Value(noun).into();
+        }
         _ => {
-            println!("Object Grammer incorrect");
-            return;
+            return Err(format!(
+                "Expected [Object] to take an action.\n <Sentence> -> <Verb> <Object>
+ <Object> -> <Adjective> <Noun> | <Noun>"
+            ))
         }
     };
 }
