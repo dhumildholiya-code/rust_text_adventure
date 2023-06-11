@@ -1,8 +1,6 @@
-mod parser;
-mod vocab;
+mod recursive_parser;
 
-use parser::parse;
-use vocab::Vocabulary;
+use recursive_parser::{parse, Vocabulary};
 
 fn main() {
     let vocabulary: Vocabulary = Vocabulary::new();
