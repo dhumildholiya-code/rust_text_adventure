@@ -16,7 +16,7 @@ fn main() {
         Room::new(1, "Room 2", "room 2 description").with_exits(HashMap::from([
             (
                 Direction::North,
-                Exit::new(3, "path forward to north.", false),
+                Exit::new(3, "there is huge door in north.", true),
             ),
             (Direction::South, Exit::new(0, "there is way back.", false)),
         ])),
@@ -25,6 +25,11 @@ fn main() {
     ];
     let mut game = Game::new(rooms);
     game.print_room_info();
+    game.navigate(Direction::North);
+    game.navigate(Direction::North);
+    game.navigate(Direction::South);
+    game.navigate(Direction::West);
+    game.navigate(Direction::North);
     // let input = String::from("pick rusty sword");
 
     // match parse_input(input, &vocabulary) {

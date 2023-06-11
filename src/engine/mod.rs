@@ -16,60 +16,28 @@ impl Game {
             current_room_id: 0,
         }
     }
-    pub fn change_room(&mut self, new_room_id: usize) -> bool {
-        if self.current_room_id != new_room_id && new_room_id < self.rooms.len() {
-            self.current_room_id = new_room_id;
-            self.response(self.rooms[self.current_room_id].get_description());
-            return true;
+    pub fn navigate(&mut self, direction: Direction) {
+        match self.rooms[self.current_room_id].get_next_room_id(direction) {
+            room::ExitRoomId::Id(next_room_id) => self.change_room(next_room_id),
+            room::ExitRoomId::Locked(info) => self.response(info),
+            room::ExitRoomId::NoExit => self.response("There is no path.".to_string()),
         }
-        false
-    }
-    pub fn response(&self, text: String) {
-        println!("{}", text);
     }
     pub fn print_room_info(&self) {
         println!("{}", self.rooms[self.current_room_id].get_description());
+    }
+    fn change_room(&mut self, new_room_id: usize) {
+        if self.current_room_id != new_room_id && new_room_id < self.rooms.len() {
+            self.current_room_id = new_room_id;
+            self.response(self.rooms[self.current_room_id].get_description());
+        }
+    }
+    fn response(&self, text: String) {
+        println!("{}", text);
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-
     use super::*;
-
-    #[test]
-    fn change_room_true_if_rooms_available() {
-        let rooms = vec![
-            Room::new(0, "name", "room 1 description").with_exits(HashMap::from([
-                (Direction::North, Exit::new(1, "description", false)),
-                (Direction::West, Exit::new(2, "description", false)),
-            ])),
-            Room::new(1, "name", "room 2 description").with_exits(HashMap::from([
-                (Direction::North, Exit::new(1, "description", false)),
-                (Direction::South, Exit::new(3, "description", false)),
-            ])),
-            Room::new(2, "name", "room 3 description"),
-            Room::new(3, "name", "room 4 description"),
-        ];
-        let mut game = Game::new(rooms);
-        assert_eq!(game.change_room(2), true);
-    }
-    #[test]
-    fn change_room_false_if_rooms_not_available() {
-        let rooms = vec![
-            Room::new(0, "name", "room 1 description").with_exits(HashMap::from([
-                (Direction::North, Exit::new(1, "description", false)),
-                (Direction::West, Exit::new(2, "description", false)),
-            ])),
-            Room::new(1, "name", "room 2 description").with_exits(HashMap::from([
-                (Direction::North, Exit::new(1, "description", false)),
-                (Direction::South, Exit::new(3, "description", false)),
-            ])),
-            Room::new(2, "name", "room 3 description"),
-            Room::new(3, "name", "room 4 description"),
-        ];
-        let mut game = Game::new(rooms);
-        assert_eq!(game.change_room(4), false);
-    }
 }

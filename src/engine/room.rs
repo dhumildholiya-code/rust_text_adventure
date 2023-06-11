@@ -8,6 +8,12 @@ pub enum Direction {
     West,
     East,
 }
+#[derive(Debug, PartialEq)]
+pub enum ExitRoomId {
+    Id(usize),
+    Locked(String),
+    NoExit,
+}
 #[derive(Debug, Clone)]
 pub struct Room {
     id: usize,
@@ -50,10 +56,17 @@ impl Room {
         }
         false
     }
-    pub fn get_next_room_id(&self, direction: Direction) -> Option<usize> {
+    pub fn get_next_room_id(&self, direction: Direction) -> ExitRoomId {
         match self.exits.get(&direction) {
-            Some(exit) => Some(exit.get_room_id()),
-            None => None,
+            Some(exit) => {
+                if exit.is_locked() {
+                    // TODO: add required items to unlock info later.
+                    return ExitRoomId::Locked("Path is locked".to_string());
+                } else {
+                    return ExitRoomId::Id(exit.get_room_id());
+                }
+            }
+            None => ExitRoomId::NoExit,
         }
     }
 }
@@ -76,26 +89,36 @@ mod tests {
         assert_eq!(false, room.add_exit(Direction::North, exit));
     }
     #[test]
-    fn get_room_id_if_exit_in_direction_exist() {
+    fn get_room_id_if_exit_exist_and_not_locked() {
         let exit1 = Exit::new(1, "test exit north", false);
         let exit2 = Exit::new(2, "test exit south", false);
         let mut room = Room::new(0, "test room", "Testing Room Description.");
         room.add_exit(Direction::North, exit1.clone());
         room.add_exit(Direction::South, exit2.clone());
+        assert_eq!(room.get_next_room_id(Direction::North), ExitRoomId::Id(1),);
+        assert_eq!(room.get_next_room_id(Direction::South), ExitRoomId::Id(2));
+    }
+    #[test]
+    fn get_Locked_if_exit_exist_and_locked() {
+        let exit1 = Exit::new(1, "test exit north", true);
+        let exit2 = Exit::new(2, "test exit south", true);
+        let mut room = Room::new(0, "test room", "Testing Room Description.");
+        room.add_exit(Direction::North, exit1.clone());
+        room.add_exit(Direction::South, exit2.clone());
         assert_eq!(
             room.get_next_room_id(Direction::North),
-            Some(exit1.get_room_id())
+            ExitRoomId::Locked("Path is locked".to_string()),
         );
         assert_eq!(
             room.get_next_room_id(Direction::South),
-            Some(exit2.get_room_id())
+            ExitRoomId::Locked("Path is locked".to_string())
         );
     }
     #[test]
-    fn get_none_if_exit_for_direction_not_exist() {
+    fn get_NoExit_if_exit_not_exist() {
         let room = Room::new(0, "test room", "Testing Room Description.");
-        assert_eq!(room.get_next_room_id(Direction::North).is_none(), true);
-        assert_eq!(room.get_next_room_id(Direction::South).is_none(), true);
+        assert_eq!(room.get_next_room_id(Direction::North), ExitRoomId::NoExit);
+        assert_eq!(room.get_next_room_id(Direction::South), ExitRoomId::NoExit);
     }
     #[test]
     fn description_without_exits_in_room() {
