@@ -1,29 +1,30 @@
 mod engine;
 mod recursive_parser;
 
+use std::collections::HashMap;
+
 use engine::*;
 use recursive_parser::{parse_input, Vocabulary};
 
 fn main() {
     let vocabulary: Vocabulary = Vocabulary::new();
-
-    let mut rooms = vec![
-        Room::new(0, "Room 1", "crazy room."),
-        Room::new(1, "Room 1", "more crazy room."),
-        Room::new(2, "Room 1", "are u stupid."),
+    let rooms = vec![
+        Room::new(0, "Room 1", "room 1 description.").with_exits(HashMap::from([
+            (Direction::North, Exit::new(1, "path in north.", false)),
+            (Direction::West, Exit::new(2, "way in west.", false)),
+        ])),
+        Room::new(1, "Room 2", "room 2 description").with_exits(HashMap::from([
+            (
+                Direction::North,
+                Exit::new(3, "path forward to north.", false),
+            ),
+            (Direction::South, Exit::new(0, "there is way back.", false)),
+        ])),
+        Room::new(2, "Room 3", "room 3 description"),
+        Room::new(3, "Room 4", "room 4 description"),
     ];
-    rooms[0].add_exit(Direction::North, Exit::new(1, "exit in north", false));
-
-    let mut current_room_id = 0;
-    println!("{}", rooms[current_room_id].get_description());
-
-    match rooms[current_room_id].get_next_room_id(Direction::North) {
-        Some(id) => current_room_id = id,
-        None => println!("No exit there!"),
-    }
-
-    println!("{}", rooms[current_room_id].get_description());
-
+    let mut game = Game::new(rooms);
+    game.print_room_info();
     // let input = String::from("pick rusty sword");
 
     // match parse_input(input, &vocabulary) {

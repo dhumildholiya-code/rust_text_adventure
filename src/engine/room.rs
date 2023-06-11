@@ -24,6 +24,14 @@ impl Room {
             exits: HashMap::new(),
         }
     }
+    pub fn with_exits(self, exits: HashMap<Direction, Exit>) -> Self {
+        Room {
+            id: self.id,
+            name: self.name,
+            description: self.description,
+            exits: exits,
+        }
+    }
     pub fn _get_id(&self) -> usize {
         self.id
     }
