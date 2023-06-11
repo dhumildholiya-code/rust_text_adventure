@@ -1,4 +1,5 @@
 use crate::Exit;
+use core::fmt;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -8,6 +9,17 @@ pub enum Direction {
     West,
     East,
 }
+impl fmt::Display for Direction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Direction::North => write!(f, "north"),
+            Direction::South => write!(f, "south"),
+            Direction::West => write!(f, "west"),
+            Direction::East => write!(f, "east"),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub enum ExitRoomId {
     Id(usize),
