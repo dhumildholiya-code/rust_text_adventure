@@ -6,6 +6,7 @@ use std::vec;
 
 pub use exit::{Exit, ExitResult};
 pub use room::{Direction, Room};
+pub use item::Item;
 
 #[derive(Debug)]
 pub struct Game {

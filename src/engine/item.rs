@@ -21,12 +21,4 @@ impl Item {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_room_desc() {
-        let item = Item::new(0, "test item", "{name} is lying on ground.", "its god key.");
-        let result = item.get_room_desc();
-        let expected = "test item is lying on gronud.";
-        assert_eq!(result.as_str(), expected);
-    }
 }

@@ -31,6 +31,7 @@ fn main() {
         vec![-1, 2, 3, 4],
         vec![-1, -1, 4, -1],
     ];
+    
     let mut game = Game::new(rooms, exits);
     game.populate_room_exit(room_exit_table);
     game.print_room_info();
