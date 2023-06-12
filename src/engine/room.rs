@@ -1,6 +1,6 @@
 use core::fmt;
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy)]
 pub enum Direction {
     North,
     South,
@@ -18,12 +18,6 @@ impl fmt::Display for Direction {
     }
 }
 
-#[derive(Debug, PartialEq)]
-pub enum ExitRoomId {
-    Id(usize),
-    Locked(String),
-    NoExit,
-}
 #[derive(Debug, Clone)]
 pub struct Room {
     id: usize,

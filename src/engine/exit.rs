@@ -1,3 +1,9 @@
+#[derive(Debug, PartialEq)]
+pub enum ExitResult {
+    Id(usize),
+    Locked(String),
+    NoExit,
+}
 #[derive(Debug, Clone)]
 pub struct Exit {
     room_id: usize,
