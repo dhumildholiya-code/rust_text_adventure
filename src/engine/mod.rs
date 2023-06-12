@@ -16,13 +16,13 @@ impl Game {
             current_room_id: 0,
         }
     }
-    pub fn navigate(&mut self, direction: Direction) {
-        match self.rooms[self.current_room_id].get_next_room_id(direction.clone()) {
-            room::ExitRoomId::Id(next_room_id) => self.change_room(next_room_id),
-            room::ExitRoomId::Locked(info) => self.response(info),
-            room::ExitRoomId::NoExit => self.response(format!("There is no path in {}", direction)),
-        }
-    }
+    // pub fn navigate(&mut self, direction: Direction) {
+    //     match self.rooms[self.current_room_id].get_next_room_id(direction.clone()) {
+    //         room::ExitRoomId::Id(next_room_id) => self.change_room(next_room_id),
+    //         room::ExitRoomId::Locked(info) => self.response(info),
+    //         room::ExitRoomId::NoExit => self.response(format!("There is no path in {}", direction)),
+    //     }
+    // }
     pub fn print_room_info(&self) {
         println!("{}", self.rooms[self.current_room_id].get_description());
     }
