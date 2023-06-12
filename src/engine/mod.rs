@@ -1,5 +1,6 @@
 mod exit;
 mod room;
+mod item;
 
 use std::vec;
 
