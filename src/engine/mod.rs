@@ -3,10 +3,8 @@ mod room;
 
 use std::vec;
 
-pub use exit::Exit;
+pub use exit::{Exit, ExitResult};
 pub use room::{Direction, Room};
-
-use self::exit::ExitResult;
 
 #[derive(Debug)]
 pub struct Game {
@@ -36,7 +34,23 @@ impl Game {
         }
     }
     pub fn print_room_info(&self) {
-        println!("{}", self.rooms[self.current_room_id].get_description());
+        let mut content = self.rooms[self.current_room_id].get_description();
+        content += "\n";
+        // adding exit info for room
+        let mut direction_id = 0;
+        for exit_id in self.room_exit[self.current_room_id].iter() {
+            if *exit_id != -1 {
+                let id = *exit_id as usize;
+                let exit_desc = self.exits[id].get_description().to_owned();
+                let direction: Direction = direction_id.into();
+                content += exit_desc
+                    .replace("{}", direction.to_string().as_str())
+                    .as_str();
+                content += " ";
+            }
+            direction_id += 1;
+        }
+        self.response(content);
     }
     fn get_next_room_id(&self, direction: Direction) -> ExitResult {
         if self.room_exit[self.current_room_id][direction as usize] == -1 {
@@ -53,11 +67,11 @@ impl Game {
     fn change_room(&mut self, new_room_id: usize) {
         if self.current_room_id != new_room_id && new_room_id < self.rooms.len() {
             self.current_room_id = new_room_id;
-            self.response(self.rooms[self.current_room_id].get_description());
+            self.print_room_info();
         }
     }
     fn response(&self, text: String) {
-        println!("{}", text);
+        println!("\n{}\n", text);
     }
 }
 
@@ -66,7 +80,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn change_room_if_exit_exist(){
+    fn change_room_if_exit_exist() {
         let mut game = test_game();
         game.navigate(Direction::North);
         assert_eq!(game.current_room_id, 1);
@@ -76,14 +90,14 @@ mod tests {
         assert_eq!(game.current_room_id, 3);
     }
     #[test]
-    fn does_not_change_room_if_exit_locked(){
+    fn does_not_change_room_if_exit_locked() {
         let mut game = test_game();
         game.navigate(Direction::North);
         game.navigate(Direction::East);
         assert_eq!(game.current_room_id, 1);
     }
     #[test]
-    fn does_not_change_room_if_exit_not_exist(){
+    fn does_not_change_room_if_exit_not_exist() {
         let mut game = test_game();
         game.navigate(Direction::North);
         game.navigate(Direction::West);
