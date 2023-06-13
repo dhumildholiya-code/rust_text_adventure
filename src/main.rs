@@ -23,6 +23,20 @@ fn main() {
         Exit::new(3, 3, "Broken little door in {}.", false),
         Exit::new(4, 5, "There is door to {}.", false),
     ];
+    let items = vec![
+        Item::new(
+            0,
+            "key",
+            "There is a {name} on floor.",
+            "{name} is god key.",
+        ),
+        Item::new(
+            1,
+            "stick",
+            "A Long {name} is in room.",
+            "Its deadly weapon.",
+        ),
+    ];
     let room_exit_table = vec![
         vec![0, -1, -1, -1],
         vec![2, 0, -1, 1],
@@ -32,7 +46,7 @@ fn main() {
         vec![-1, -1, 4, -1],
     ];
 
-    let mut game = Game::new(rooms, exits);
+    let mut game = Game::new(rooms, exits, items);
     game.populate_room_exit(room_exit_table);
     game.print_room_info();
     game.navigate(Direction::North);

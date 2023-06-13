@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Item {
     id: usize,
     name: String,

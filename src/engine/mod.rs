@@ -2,8 +2,6 @@ mod exit;
 mod item;
 mod room;
 
-use std::vec;
-
 pub use exit::{Exit, ExitResult};
 pub use item::Item;
 pub use room::{Direction, Room};
@@ -12,15 +10,17 @@ pub use room::{Direction, Room};
 pub struct Game {
     rooms: Vec<Room>,
     exits: Vec<Exit>,
+    items: Vec<Item>,
     room_exit: Vec<Vec<i32>>,
     current_room_id: usize,
 }
 impl Game {
-    pub fn new(rooms: Vec<Room>, exits: Vec<Exit>) -> Self {
+    pub fn new(rooms: Vec<Room>, exits: Vec<Exit>, items: Vec<Item>) -> Self {
         let room_len = rooms.len();
         Game {
             rooms,
             exits,
+            items,
             room_exit: vec![vec![-1; 4]; room_len],
             current_room_id: 0,
         }
@@ -46,6 +46,8 @@ impl Game {
                 content += " ";
             }
         }
+        //adding item info in room description.
+
         self.response(content);
     }
     fn get_next_room_id(&self, direction: Direction) -> ExitResult {
@@ -138,6 +140,20 @@ mod tests {
             Exit::new(3, 3, "little door", false),
             Exit::new(4, 5, "open door", false),
         ];
+        let items = vec![
+            Item::new(
+                0,
+                "key",
+                "There is a {name} on floor.",
+                "{name} is god key.",
+            ),
+            Item::new(
+                1,
+                "stick",
+                "A Long {name} is in room.",
+                "Its deadly weapon.",
+            ),
+        ];
         let room_exit_table = vec![
             vec![0, -1, -1, -1],
             vec![2, 0, -1, 1],
@@ -146,7 +162,7 @@ mod tests {
             vec![-1, 2, 3, 4],
             vec![-1, -1, 4, -1],
         ];
-        let mut game = Game::new(rooms, exits);
+        let mut game = Game::new(rooms, exits, items);
         game.populate_room_exit(room_exit_table);
         game
     }
