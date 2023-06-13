@@ -19,8 +19,8 @@ impl Game {
     pub fn new(rooms: Vec<Room>, exits: Vec<Exit>) -> Self {
         let room_len = rooms.len();
         Game {
-            rooms: rooms,
-            exits: exits,
+            rooms,
+            exits,
             room_exit: vec![vec![-1; 4]; room_len],
             current_room_id: 0,
         }
