@@ -38,19 +38,13 @@ impl Game {
     pub fn print_room_info(&self) {
         let mut content = self.rooms[self.current_room_id].get_description();
         content += "\n";
-        // adding exit info for room
-        let mut direction_id = 0;
-        for exit_id in self.room_exit[self.current_room_id].iter() {
+        // adding exit info in room description.
+        for (id, exit_id) in self.room_exit[self.current_room_id].iter().enumerate() {
             if *exit_id != -1 {
                 let id = *exit_id as usize;
-                let exit_desc = self.exits[id].get_description().to_owned();
-                let direction: Direction = direction_id.into();
-                content += exit_desc
-                    .replace("{}", direction.to_string().as_str())
-                    .as_str();
+                content += self.exits[id].get_description(id as i32).as_str();
                 content += " ";
             }
-            direction_id += 1;
         }
         self.response(content);
     }
