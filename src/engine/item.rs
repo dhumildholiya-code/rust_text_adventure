@@ -1,7 +1,7 @@
 pub struct Item {
     id: usize,
     name: String,
-    room_desc: String,
+    room_position: String,
     description: String,
 }
 impl Item {
@@ -9,16 +9,23 @@ impl Item {
         Item {
             id: id,
             name: name.to_string(),
-            room_desc: room_desc.replace("{name}", name),
+            room_position: room_desc.replace("{name}", name),
             description: description.replace("{name}", name),
         }
     }
-    pub fn get_room_desc(&self) -> String {
-        self.room_desc.clone()
+    pub fn get_room_position(&self) -> String {
+        self.room_position.clone()
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn testing_item_room_position_description() {
+        let item = Item::new(0, "item", "{name} lying on ground.", "desc");
+        let expected = "item lying on ground.";
+        assert_eq!(item.get_room_position(), expected);
+    }
 }

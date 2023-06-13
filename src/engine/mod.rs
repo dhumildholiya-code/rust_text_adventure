@@ -1,12 +1,12 @@
 mod exit;
-mod room;
 mod item;
+mod room;
 
 use std::vec;
 
 pub use exit::{Exit, ExitResult};
-pub use room::{Direction, Room};
 pub use item::Item;
+pub use room::{Direction, Room};
 
 #[derive(Debug)]
 pub struct Game {
@@ -138,11 +138,11 @@ mod tests {
             Room::new(5, "Room 6", "room 6 description"),
         ];
         let exits = vec![
-            Exit::new(1, "There is open door", false),
-            Exit::new(2, "There is huge locked door", true),
-            Exit::new(4, "open pathway", false),
-            Exit::new(3, "little door", false),
-            Exit::new(5, "open door", false),
+            Exit::new(0, 1, "There is open door", false),
+            Exit::new(1, 2, "There is huge locked door", true),
+            Exit::new(2, 4, "open pathway", false),
+            Exit::new(3, 3, "little door", false),
+            Exit::new(4, 5, "open door", false),
         ];
         let room_exit_table = vec![
             vec![0, -1, -1, -1],

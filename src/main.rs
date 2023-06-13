@@ -17,11 +17,11 @@ fn main() {
         Room::new(5, "Room 6", "room 6 description"),
     ];
     let exits = vec![
-        Exit::new(1, "There is open door in {}.", false),
-        Exit::new(2, "Huge locked door in {}.", true),
-        Exit::new(4, "In {} open pathway.", false),
-        Exit::new(3, "Broken little door in {}.", false),
-        Exit::new(5, "There is door to {}.", false),
+        Exit::new(0, 1, "There is open door in {}.", false),
+        Exit::new(1, 2, "Huge locked door in {}.", true),
+        Exit::new(2, 4, "In {} open pathway.", false),
+        Exit::new(3, 3, "Broken little door in {}.", false),
+        Exit::new(4, 5, "There is door to {}.", false),
     ];
     let room_exit_table = vec![
         vec![0, -1, -1, -1],
@@ -31,7 +31,7 @@ fn main() {
         vec![-1, 2, 3, 4],
         vec![-1, -1, 4, -1],
     ];
-    
+
     let mut game = Game::new(rooms, exits);
     game.populate_room_exit(room_exit_table);
     game.print_room_info();
