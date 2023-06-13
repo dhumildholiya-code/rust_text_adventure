@@ -9,8 +9,8 @@ use recursive_parser::{parse_input, Vocabulary};
 fn main() {
     let vocabulary: Vocabulary = Vocabulary::new();
     let rooms = vec![
-        Room::new(0, "Room 1", "room 1 description."),
-        Room::new(1, "Room 2", "room 2 description"),
+        Room::new(0, "Room 1", "room 1 description.").with_items("1"),
+        Room::new(1, "Room 2", "room 2 description").with_items("0"),
         Room::new(2, "Room 3", "room 3 description"),
         Room::new(3, "Room 4", "room 4 description"),
         Room::new(4, "Room 5", "room 5 description"),

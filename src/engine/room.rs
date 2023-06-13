@@ -61,6 +61,9 @@ impl Room {
             items,
         }
     }
+    pub fn get_items(&self) -> Vec<usize>{
+        self.items.clone()
+    }
     pub fn _get_id(&self) -> usize {
         self.id
     }

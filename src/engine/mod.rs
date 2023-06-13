@@ -47,7 +47,14 @@ impl Game {
             }
         }
         //adding item info in room description.
-
+        let items_in_room = self.rooms[self.current_room_id].get_items();
+        if items_in_room.len() > 0 {
+            content += "\n";
+            for item_id in items_in_room{
+                content += self.items[item_id].get_room_position().as_str();
+                content += " ";
+            }
+        }
         self.response(content);
     }
     fn get_next_room_id(&self, direction: Direction) -> ExitResult {
@@ -126,8 +133,8 @@ mod tests {
 
     fn test_game() -> Game {
         let rooms = vec![
-            Room::new(0, "Room 1", "room 1 description."),
-            Room::new(1, "Room 2", "room 2 description"),
+            Room::new(0, "Room 1", "room 1 description.").with_items("1"),
+            Room::new(1, "Room 2", "room 2 description").with_items("0"),
             Room::new(2, "Room 3", "room 3 description"),
             Room::new(3, "Room 4", "room 4 description"),
             Room::new(4, "Room 5", "room 5 description"),
