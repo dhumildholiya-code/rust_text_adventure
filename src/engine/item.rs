@@ -28,8 +28,11 @@ mod tests {
     #[test]
     fn testing_item_room_position_description() {
         let item = Item::new(0, "item", "{name} lying on ground.", "desc");
-        let expected = "item lying on ground.";
-        assert_eq!(item.get_room_position(), expected);
+        let item_1 = Item::new(1, "item_1", "{name} lying on ground.", "desc");
+        let expected_1 = "item lying on ground.";
+        let expected_2 = "item_1 lying on ground.";
+        assert_eq!(item.get_room_position(), expected_1);
+        assert_eq!(item_1.get_room_position(), expected_2);
     }
     #[test]
     fn testing_item_description() {
