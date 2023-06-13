@@ -106,14 +106,14 @@ mod tests {
         assert_eq!(game.current_room_id, 1);
     }
     #[test]
-    fn get_exitId_if_exit_is_unlocked() {
+    fn get_exitid_if_exit_is_unlocked() {
         let game = test_game();
         let expected = ExitResult::Id(1);
         let result = game.get_next_room_id(Direction::North);
         assert_eq!(result, expected);
     }
     #[test]
-    fn get_Locked_if_exit_is_locked() {
+    fn get_locked_if_exit_is_locked() {
         let mut game = test_game();
         game.change_room(1);
         let expected = ExitResult::Locked("Door is locked".to_string());
@@ -121,7 +121,7 @@ mod tests {
         assert_eq!(result, expected);
     }
     #[test]
-    fn get_NoExit_if_exit_not_exist() {
+    fn get_no_exit_if_exit_not_exist() {
         let game = test_game();
         let expected = ExitResult::NoExit;
         let result = game.get_next_room_id(Direction::East);
