@@ -51,7 +51,6 @@ fn main() {
     game.response(game.get_room_info(0));
     game.pick_item("key");
     game.pick_item("stick");
-    list_inventory(game.get_items(), game.get_player());
     game.navigate(Direction::North);
     // game.navigate(Direction::North);
     // game.navigate(Direction::North);

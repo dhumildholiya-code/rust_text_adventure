@@ -1,10 +1,9 @@
-mod command;
+mod commands;
 mod exit;
 mod item;
 mod player;
 mod room;
 
-pub use command::*;
 pub use exit::Exit;
 pub use item::Item;
 pub use player::Player;

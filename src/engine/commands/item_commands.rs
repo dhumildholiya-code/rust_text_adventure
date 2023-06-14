@@ -1,4 +1,4 @@
-use crate::{Item, Player};
+use crate::engine::{Item, Room, Player};
 
 pub fn list_inventory(items: &Vec<Item>, player: &Player) -> String {
     let len = player.get_inventory().len();
@@ -12,6 +12,8 @@ pub fn list_inventory(items: &Vec<Item>, player: &Player) -> String {
     }
     println!("\n{}", content);
     content
+}
+pub fn drop_item(room: &mut Room, player: &mut Player) -> String{
 }
 
 #[cfg(test)]
