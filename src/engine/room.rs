@@ -61,11 +61,20 @@ impl Room {
             items,
         }
     }
-    pub fn has_item(&self, item_id:usize)-> bool{
+    pub fn has_item(&self, item_id: usize) -> bool {
         self.items.contains(&item_id)
     }
-    pub fn get_items(&self) -> Vec<usize>{
+    pub fn get_items(&self) -> Vec<usize> {
         self.items.clone()
+    }
+    pub fn remove_item(&mut self, item_id: usize) -> Option<usize> {
+        match self.items.iter().position(|x| *x == item_id) {
+            Some(index) => Some(self.items.swap_remove(index)),
+            None => None,
+        }
+    }
+    pub fn add_item(&mut self, item_id: usize) {
+        self.items.push(item_id)
     }
     pub fn get_description(&self) -> String {
         self.description.clone()
@@ -76,6 +85,28 @@ impl Room {
 mod tests {
     use super::*;
 
+    #[test]
+    fn return_removed_item_if_item_in_room() {
+        let mut room = Room::new(0, "room_1", "good room 1.").with_items("0 1 2");
+        let expected_1 = Some(1);
+        let expected_2 = Some(2);
+        assert_eq!(room.remove_item(1), expected_1);
+        assert_eq!(room.remove_item(2), expected_2);
+    }
+    #[test]
+    fn return_none_if_item_not_in_room() {
+        let mut room = Room::new(0, "room_1", "good room 1.").with_items("0 1 2");
+        assert_eq!(room.remove_item(4), None);
+        assert_eq!(room.remove_item(5), None);
+    }
+    #[test]
+    fn check_add_item_adds_an_item_in_room() {
+        let mut room = Room::new(0, "room_1", "good room 1.").with_items("0");
+        room.add_item(5);
+        assert_eq!(room.items[room.items.len() - 1], 5);
+        room.add_item(6);
+        assert_eq!(room.items[room.items.len() - 1], 6);
+    }
     #[test]
     fn return_room_with_items_id() {
         let room = Room::new(0, "room_1", "good room 1.").with_items("0 1 2");
