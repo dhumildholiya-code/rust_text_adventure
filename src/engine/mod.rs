@@ -1,10 +1,16 @@
+mod command;
 mod exit;
 mod item;
+mod player;
 mod room;
 
-pub use exit::{Exit, ExitResult};
+pub use command::*;
+pub use exit::Exit;
 pub use item::Item;
+pub use player::Player;
 pub use room::{Direction, Room};
+
+use exit::ExitResult;
 
 #[derive(Debug)]
 pub struct Game {
@@ -12,6 +18,7 @@ pub struct Game {
     exits: Vec<Exit>,
     items: Vec<Item>,
     room_exit: Vec<Vec<i32>>,
+    player: Player,
     current_room_id: usize,
 }
 impl Game {
@@ -22,11 +29,21 @@ impl Game {
             exits,
             items,
             room_exit: vec![vec![-1; 4]; room_len],
+            player: Player::new(100, 100),
             current_room_id: 0,
         }
     }
     pub fn populate_room_exit(&mut self, data: Vec<Vec<i32>>) {
         self.room_exit = data;
+    }
+    pub fn get_items(&self) -> &Vec<Item> {
+        &self.items
+    }
+    pub fn get_player(&self) -> &Player {
+        &self.player
+    }
+    pub fn get_mut_player(&mut self) -> &mut Player {
+        &mut self.player
     }
     pub fn navigate(&mut self, direction: Direction) {
         match self.get_next_room_id(direction) {
@@ -48,6 +65,18 @@ impl Game {
             None => self.response("No item of that name is here.".to_string()),
         };
     }
+    pub fn pick_item(&mut self, item_name: &str) {
+        match self.items.iter().find(|&x| x.get_name() == item_name) {
+            Some(item) => {
+                let item_id = item.get_id();
+                match self.rooms[self.current_room_id].remove_item(item_id) {
+                    Some(removed_item_id) => {
+                        self.player.add_item(removed_item_id);
+                        self.response(format!("Added {} to your inventory.", item_name));
+                    }
+                    None => self.response("No item of that name is here.".to_string()),
+                }
+            }
             None => self.response("No item of that name is here.".to_string()),
         };
     }

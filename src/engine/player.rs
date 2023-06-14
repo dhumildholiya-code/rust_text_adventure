@@ -15,6 +15,9 @@ impl Player {
             items: Vec::new(),
         }
     }
+    pub fn get_inventory(&self)-> &Vec<usize>{
+        &self.items
+    }
     pub fn remove_item(&mut self, item_id: usize) -> Option<usize> {
         match self.items.iter().position(|x| *x == item_id) {
             Some(index) => Some(self.items.swap_remove(index)),
