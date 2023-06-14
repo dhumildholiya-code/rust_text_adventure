@@ -14,6 +14,9 @@ impl Item {
             description: description.replace("{name}", name),
         }
     }
+    pub fn get_name(&self) -> String{
+        self.name.clone()
+    }
     pub fn get_room_position(&self) -> String {
         self.room_position.clone()
     }

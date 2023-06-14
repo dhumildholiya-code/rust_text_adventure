@@ -35,6 +35,12 @@ impl Game {
             ExitResult::NoExit => self.response(format!("There is no path in {}", direction)),
         }
     }
+    pub fn inspect_item(&self, item_name: &str) {
+        match self.items.iter().find(|&x| x.get_name() == item_name) {
+            Some(item) => self.response(item.get_description()),
+            None => self.response("No item of that name is here.".to_string()),
+        };
+    }
     pub fn get_room_info(&self, room_id: usize) -> String {
         let mut content = self.rooms[room_id].get_description();
         content += "\n";
