@@ -37,7 +37,17 @@ impl Game {
     }
     pub fn inspect_item(&self, item_name: &str) {
         match self.items.iter().find(|&x| x.get_name() == item_name) {
-            Some(item) => self.response(item.get_description()),
+            Some(item) => {
+                let item_id = item.get_id();
+                if self.rooms[self.current_room_id].has_item(item_id) {
+                    self.response(item.get_description());
+                } else {
+                    self.response("No item of that name is here.".to_string());
+                }
+            }
+            None => self.response("No item of that name is here.".to_string()),
+        };
+    }
             None => self.response("No item of that name is here.".to_string()),
         };
     }

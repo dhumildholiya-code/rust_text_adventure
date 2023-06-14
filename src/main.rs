@@ -49,6 +49,9 @@ fn main() {
     let mut game = Game::new(rooms, exits, items);
     game.populate_room_exit(room_exit_table);
     game.response(game.get_room_info(0));
+    game.inspect_item("key");
+    game.inspect_item("stick");
+    game.inspect_item("sti");
     game.navigate(Direction::North);
     // game.navigate(Direction::North);
     // game.navigate(Direction::North);

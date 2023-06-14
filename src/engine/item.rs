@@ -14,6 +14,9 @@ impl Item {
             description: description.replace("{name}", name),
         }
     }
+    pub fn get_id(&self) -> usize{
+        self.id
+    }
     pub fn get_name(&self) -> String{
         self.name.clone()
     }
